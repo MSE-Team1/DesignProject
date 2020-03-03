@@ -10,6 +10,7 @@
  Rev 3 - New chassis, integrated encoder (I2C) motors and charlieplexing
  Rev 4 - Update for MSEduino v. 2
  Rev 5 - Fix for restoring EEPROM line tracker calibration values
+ Rev 6 - Added encoder functionality
  
  */
 
