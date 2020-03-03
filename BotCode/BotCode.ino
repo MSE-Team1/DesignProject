@@ -13,12 +13,7 @@
  
  */
 
-#include <Servo.h>
-#include <EEPROM.h>
-#include <uSTimer2.h>
-#include <CharliePlexM.h>
-#include <Wire.h>
-#include <I2CEncoder.h>
+#include "includes.h"
 
 Servo servo_RightMotor;
 Servo servo_LeftMotor;
@@ -27,16 +22,6 @@ Servo servo_GripMotor;
 
 I2CEncoder encoder_RightMotor;
 I2CEncoder encoder_LeftMotor;
-
-// Uncomment keywords to enable debugging output
-
-//#define DEBUG_MODE_DISPLAY
-//#define DEBUG_MOTORS
-//#define DEBUG_LINE_TRACKERS
-//#define DEBUG_ENCODERS
-//#define DEBUG_ULTRASONIC
-//#define DEBUG_LINE_TRACKER_CALIBRATION
-//#define DEBUG_MOTOR_CALIBRATION
 
 boolean bt_Motors_Enabled = true;
 
