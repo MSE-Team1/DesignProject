@@ -1,16 +1,16 @@
-/*
+d/*
 
- MSE 2202 MSEBot base code for Labs 3 and 4
+ MSE 2202 BotCode for the design project
  Language: Arduino
- Authors: Michael Naish and Eugen Porter
- Date: 20/02/12
+ Authors: Michael Naish, Eugen Porter, Stewart Wing, and Kyle Inzunza
+ Date: 03-03-20
  
  Rev 1 - Initial version
  Rev 2 - Updated for MSEduino
  Rev 3 - New chassis, integrated encoder (I2C) motors and charlieplexing
  Rev 4 - Update for MSEduino v. 2
  Rev 5 - Fix for restoring EEPROM line tracker calibration values
- Rev 6 - Added encoder functionality
+ Rev 6 - Added encoder follow functionality
  
  */
 
@@ -26,55 +26,9 @@ I2CEncoder encoder_LeftMotor;
 
 boolean bt_Motors_Enabled = true;
 
-//port pin constants
-const int ci_Ultrasonic_Ping = 2;   //input plug
-const int ci_Ultrasonic_Data = 3;   //output plug
-const int ci_Charlieplex_LED1 = 4;
-const int ci_Charlieplex_LED2 = 5;
-const int ci_Charlieplex_LED3 = 6;
-const int ci_Charlieplex_LED4 = 7;
-const int ci_Mode_Button = 7;
-const int ci_Right_Motor = 8;
-const int ci_Left_Motor = 9;
-const int ci_Arm_Motor = 10;
-const int ci_Grip_Motor = 11;
-const int ci_Motor_Enable_Switch = 12;
-const int ci_Right_Line_Tracker = A0;
-const int ci_Middle_Line_Tracker = A1;
-const int ci_Left_Line_Tracker = A2;
-const int ci_Light_Sensor = A3;
-const int ci_I2C_SDA = A4;         // I2C data = white
-const int ci_I2C_SCL = A5;         // I2C clock = yellow
-
-// Charlieplexing LED assignments
-const int ci_Heartbeat_LED = 1;
-const int ci_Indicator_LED = 4;
-const int ci_Right_Line_Tracker_LED = 6;
-const int ci_Middle_Line_Tracker_LED = 9;
-const int ci_Left_Line_Tracker_LED = 12;
-
 //constants
 
-// EEPROM addresses
-const int ci_Left_Line_Tracker_Dark_Address_L = 0;
-const int ci_Left_Line_Tracker_Dark_Address_H = 1;
-const int ci_Left_Line_Tracker_Light_Address_L = 2;
-const int ci_Left_Line_Tracker_Light_Address_H = 3;
-const int ci_Middle_Line_Tracker_Dark_Address_L = 4;
-const int ci_Middle_Line_Tracker_Dark_Address_H = 5;
-const int ci_Middle_Line_Tracker_Light_Address_L = 6;
-const int ci_Middle_Line_Tracker_Light_Address_H = 7;
-const int ci_Right_Line_Tracker_Dark_Address_L = 8;
-const int ci_Right_Line_Tracker_Dark_Address_H = 9;
-const int ci_Right_Line_Tracker_Light_Address_L = 10;
-const int ci_Right_Line_Tracker_Light_Address_H = 11;
-const int ci_Left_Motor_Offset_Address_L = 12;
-const int ci_Left_Motor_Offset_Address_H = 13;
-const int ci_Right_Motor_Offset_Address_L = 14;
-const int ci_Right_Motor_Offset_Address_H = 15;
 
-const int ci_Left_Motor_Stop = 1500;        // 200 for brake mode; 1500 for stop
-const int ci_Right_Motor_Stop = 1500;
 const int ci_Grip_Motor_Open = 140;         // Experiment to determine appropriate value
 const int ci_Grip_Motor_Closed = 90;        //  "
 const int ci_Arm_Servo_Retracted = 55;      //  "
@@ -281,6 +235,9 @@ void loop()
          Adjust motor speed according to information from line tracking sensors and 
          possibly encoder counts.
        /*************************************************************************************/
+
+       EncoderDriveForward(1000, RIGHT_MOTOR);
+       EncoderDriveForward(1000, LEFT_MOTOR);
 
         if(bt_Motors_Enabled)
         {
