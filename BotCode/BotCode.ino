@@ -29,6 +29,7 @@ const int ci_Display_Time = 500;
 const int ci_Motor_Calibration_Cycles = 3;
 const int ci_Motor_Calibration_Time = 5000;
 
+
 //variables
 byte b_LowByte;
 byte b_HighByte;
@@ -43,7 +44,9 @@ unsigned int ui_Cal_Count;
 unsigned int ui_Cal_Cycle;
 
 
-unsigned int  ui_Robot_State_Index = 0;
+unsigned int ui_Robot_State_Index = 0;
+unsigned int ui_Course_State_Index = 0; //what part of the showcase program should be running
+
 //0123456789ABCDEF
 unsigned int  ui_Mode_Indicator[6] = {
   0x00,    //B0000000000000000,  //Stop
@@ -67,6 +70,8 @@ boolean bt_3_S_Time_Up = false;
 boolean bt_Do_Once = false;
 boolean bt_Cal_Initialized = false;
 
+boolean bt_North_Corner; //if true: robot starts in north corner, if false: robot starts in south corner
+
 void setup() {
   Wire.begin();        // Wire library required for I2CEncoder library
   Serial.begin(9600);
@@ -88,8 +93,9 @@ void setup() {
   pinMode(ci_Arm_Motor, OUTPUT);
   servo_ArmMotor.attach(ci_Arm_Motor);
 
-  // set up motor enable switch
+  // set up motor enable and corner switch
   pinMode(ci_Motor_Enable_Switch, INPUT);
+  pinMode(ci_Corner_Select_Switch, INPUT);
 
   // set up encoders. Must be initialized in order that they are chained together,
   // starting with the encoder directly connected to the Arduino. See I2CEncoder docs
@@ -139,6 +145,9 @@ void loop()
 
   // check if drive motors should be powered
   bt_Motors_Enabled = digitalRead(ci_Motor_Enable_Switch);
+  // check what corner robot is in
+  bt_North_Corner = digitalRead(ci_Corner_Select_Switch);
+  
 
   // modes
   // 0 = default after power up/reset
@@ -185,7 +194,7 @@ void loop()
           Serial.println(l_Right_Motor_Position);
 #endif
 
-          /*
+          /* FROM EUGEN'S CODE BUT SEEMS TO BREAK THINGS
             // set motor speeds
             ui_Left_Motor_Speed = constrain(ui_Motors_Speed + ui_Left_Motor_Offset, 1600, 2100);
             ui_Right_Motor_Speed = constrain(ui_Motors_Speed + ui_Right_Motor_Offset, 1600, 2100);
@@ -197,8 +206,10 @@ void loop()
             possibly encoder counts.
             /*************************************************************************************/
 
-          EncoderDriveForward(1000, RIGHT_MOTOR);
-          EncoderDriveForward(1000, LEFT_MOTOR);
+          switch(ui_Course_State_Index){
+            
+            
+          }
 
 
           if (ui_Left_Motor_Speed != ci_Motor_Speed_Brake) {
