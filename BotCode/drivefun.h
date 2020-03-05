@@ -5,8 +5,10 @@
 const int ci_Left_Motor_Stop = 1500;        // 200 for brake mode; 1500 for stop
 const int ci_Right_Motor_Stop = 1500;
 const int ci_Motor_Speed_Brake = 200;
+unsigned int ui_Motors_Speed = 1900;        // Default run speed
 const int ci_Motor_Speed_Forward_Encoder = 1600;
 
+//identifiers for left and right motor in functions
 const int RIGHT_MOTOR = 0;
 const int LEFT_MOTOR = 1;
 

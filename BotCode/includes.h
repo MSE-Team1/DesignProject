@@ -12,5 +12,6 @@
 #include "EEPROMconsts.h"
 #include "pins.h"
 #include "drivefun.h"
+#include "sensorfun.h"
 
 #endif
