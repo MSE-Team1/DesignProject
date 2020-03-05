@@ -1,4 +1,5 @@
 #ifndef PINS_H
+#define PINS_H
 
 //port pin constants
 const int ci_Ultrasonic_Ping = 2;   //input plug

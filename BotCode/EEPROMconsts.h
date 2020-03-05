@@ -1,4 +1,5 @@
 #ifndef EEPROMCONSTS_H
+#define EEPROMCONSTS_H
 
 // EEPROM addresses
 const int ci_Left_Line_Tracker_Dark_Address_L = 0;
