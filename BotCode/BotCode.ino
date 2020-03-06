@@ -112,9 +112,6 @@ void setup() {
   b_HighByte = EEPROM.read(ci_Right_Motor_Offset_Address_H);
   ui_Right_Motor_Offset = word(b_HighByte, b_LowByte);
 
-  //zero encoders
-  encoder_RightMotor.zero();
-  encoder_LeftMotor.zero();
 }
 
 void loop()
@@ -147,23 +144,23 @@ void loop()
   bt_Motors_Enabled = digitalRead(ci_Motor_Enable_Switch);
   // check what corner robot is in
   bt_North_Corner = digitalRead(ci_Corner_Select_Switch);
-  
+
 
   // modes
   // 0 = default after power up/reset
   // 1 = Press mode button once to enter. Run robot.
-  // 2 = Press mode button twice to enter. Calibrate line tracker light level.
-  // 3 = Press mode button three times to enter. Calibrate line tracker dark level.
+  // 2 = Press mode button twice to enter. FREE SPACE
+  // 3 = Press mode button three times to enter. FREE SPACE
   // 4 = Press mode button four times to enter. Calibrate motor speeds to drive straight.
   switch (ui_Robot_State_Index)
   {
     case 0:    //Robot stopped
       {
-        Ping();
+        //Ping();
         servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
         servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-        servo_ArmMotor.write(ci_Arm_Servo_Retracted);
-        servo_GripMotor.write(ci_Grip_Motor_Closed);
+        //servo_ArmMotor.write(ci_Arm_Servo_Retracted);
+        //servo_GripMotor.write(ci_Grip_Motor_Closed);
         encoder_LeftMotor.zero();
         encoder_RightMotor.zero();
         ui_Mode_Indicator_Index = 0;
@@ -206,9 +203,38 @@ void loop()
             possibly encoder counts.
             /*************************************************************************************/
 
-          switch(ui_Course_State_Index){
-            
-            
+#ifdef DEBUG_COURSE_STAGE
+          Serial.print("COURSE STAGE BEING RUN: ");
+          Serial.println(ui_Course_State_Index);
+#endif
+
+          switch (ui_Course_State_Index) {
+            case 0:
+              {
+                //zero encoders
+                encoder_RightMotor.zero();
+                encoder_LeftMotor.zero();
+                
+                ui_Course_Stage_Index++;
+
+                break;
+              }
+              case 1:
+              {
+                //run encoders forward certain distance
+                //when both functions return true then they have reached the desired count
+                if(EncoderDriveForward(1000, LEFT_MOTOR) && EncoderDriveForward(1000, RIGHT_MOTOR)){
+                  ui_Course_Stage_Index++
+                }
+                break;
+              }
+              case 2:
+              {
+                
+                break;
+              }
+
+
           }
 
 
