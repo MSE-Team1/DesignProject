@@ -42,11 +42,11 @@ bool EncoderDriveForward(int i_Count, int i_Side) {
   //LEFT MOTOR
   else {
     if (i_Count >= encoder_LeftMotor.getRawPosition()) {
-      ui_Right_Motor_Speed = ci_Motor_Speed_Forward_Encoder;
+      ui_Left_Motor_Speed = ci_Motor_Speed_Forward_Encoder;
       b_State = 0;
     }
     else {
-      ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
+      ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
       b_State = 1;
     }
 #ifdef DEBUG_ENCODER_DRIVE
@@ -59,6 +59,15 @@ bool EncoderDriveForward(int i_Count, int i_Side) {
 #endif
 
   return b_State;
+}
+
+//zero point turn left a certain amount of degrees
+//encoders must be zeroed in previous stage
+bool ZeroPointRight(int i_Degrees){
+  bt_State = 0;
+  
+  
+  return bt_State;
 }
 
 #endif

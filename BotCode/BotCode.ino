@@ -47,6 +47,9 @@ unsigned int ui_Cal_Cycle;
 unsigned int ui_Robot_State_Index = 0;
 unsigned int ui_Course_State_Index = 0; //what part of the showcase program should be running
 
+//flags
+boolean bt_Go_To_Next_Stage;
+
 //0123456789ABCDEF
 unsigned int  ui_Mode_Indicator[6] = {
   0x00,    //B0000000000000000,  //Stop
@@ -215,16 +218,28 @@ void loop()
                 encoder_RightMotor.zero();
                 encoder_LeftMotor.zero();
                 
-                ui_Course_Stage_Index++;
+                //make sure motors are stopped
+                ui_Left_Motor_Speed = ci_Left_Motor_Stop;
+                ui_Right_Motor_Speed = ci_Right_Motor_Stop;
+                
+                ui_Course_State_Index++;
 
                 break;
               }
               case 1:
               {
+                bt_Go_To_Next_Stage = 1; //default to true, encoder statem
+                
                 //run encoders forward certain distance
+                //equiv of right&&left
+                //do not run in if statement becasue only the first function will run
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR); //R
+               
+                
                 //when both functions return true then they have reached the desired count
-                if(EncoderDriveForward(1000, LEFT_MOTOR) && EncoderDriveForward(1000, RIGHT_MOTOR)){
-                  ui_Course_Stage_Index++
+                if(bt_Go_To_Next_Stage){
+                  //ui_Course_State_Index++
                 }
                 break;
               }
