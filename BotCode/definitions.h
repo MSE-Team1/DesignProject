@@ -11,7 +11,7 @@
 //#define DEBUG_MOTOR_CALIBRATION
 //#define DEBUG_ULTRASONIC
 //#define DEBUG_LINE_TRACKER_CALIBRATION
-
+#define DEBUG_IRSensor
 
 //motor objects
 Servo servo_RightMotor;

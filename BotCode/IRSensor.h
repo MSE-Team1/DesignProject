@@ -16,26 +16,26 @@ SoftwareSerial mySerial(10, 11); // RX, TX
 void CheckBeacon() {
   boolean bt_Flag = 0;
   int i_Beacon;
-  char ir_char;
+  int ir_int;
 
-  while (Serial.available() > 0) {
+  while (mySerial.available() > 0) {
 
     bt_Flag = 1;
 
     //read the incoming serial
-    ir_char = mySerial.read();
+    ir_int = mySerial.read();
 
 
 #ifdef DEBUG_IRSensor
     Serial.print("IR Sensor Value: ");
-    Serial.print(ir_char);
+    Serial.println(!ir_int);
 #endif
 
 
-    if (ir_char == 48) {
+    if (ir_int == 48) {
       i_Beacon = ci_A_BEACON;
     }
-    else if (ir_char == 53) {
+    else if (ir_int == 53) {
       i_Beacon = ci_B_BEACON;
     }
   }
@@ -45,7 +45,7 @@ void CheckBeacon() {
   }
 #ifdef DEBUG_IRSensor
   Serial.print("IR Beacon seen: ");
-  Serial.print(i_Beacon);
+  Serial.println(i_Beacon);
 #endif
   return i_Beacon;
 }

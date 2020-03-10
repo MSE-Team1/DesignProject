@@ -215,6 +215,8 @@ void loop()
 
 
           CheckBeacon();
+          
+        
           switch (ui_Course_State_Index) {
             case 0:
               {
