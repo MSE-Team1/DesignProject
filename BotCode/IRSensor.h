@@ -1,41 +1,45 @@
-/*
-  Software serial for beacon finding IR Sensor
-
- The circuit:
-
-* RX is digital pin 7 (connect to TX of other device)
-* TX is digital pin 11 (connect to RX of other device)
-
-*/
+#ifndef IRSENSOR_H
+#define IRSENSOR_H
 
 #include <SoftwareSerial.h>
 
 const int ci_NO_BEACON = 0;
-const int ci_A_BEACON = 1; 
+const int ci_A_BEACON = 1;
 const int ci_B_BEACON = 2;
-unsigned int ui_flag = 0;
 SoftwareSerial mySerial(7, 11); // RX, TX
 
 
 
-  // set the data rate for the SoftwareSerial port
-  mySerial.begin(2400);
+
+
+
+void CheckBeacon() {
+  boolean bt_Flag = 0;
+  int i_Beacon;
+  char ir_char;
   
+  while (Serial.available() > 0) {
 
-  while (Serial.available()> ci_NO_BEACON) {
+    bt_Flag = 1;
+
     //read the incoming serial
+    ir_char = mySerial.read();
+    
 
-    char ir_char = mySerial.read();
 
-    if( ir_char == ci_A_BEACON){ 
-    return ci_A_BEACON;
+    if (ir_char == 48) {
+      i_Beacon = ci_A_BEACON;
     }
-    else if (ir_char == ci_B_BEACON) {
-      return ci_B_BEACON;
+    else if (ir_char == 53) {
+      i_Beacon = ci_B_BEACON;
     }
-
-else flag =1
-
   }
 
-return ci_NO_BEACON;
+  if(!bt_Flag){
+    i_Beacon = ci_NO_BEACON;
+  }
+
+  return i_Beacon;
+}
+
+#endif

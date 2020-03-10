@@ -78,6 +78,8 @@ boolean bt_North_Corner; //if true: robot starts in north corner, if false: robo
 void setup() {
   Wire.begin();        // Wire library required for I2CEncoder library
   Serial.begin(9600);
+  // set the data rate for the SoftwareSerial port
+  mySerial.begin(2400);
 
   CharliePlexM::setBtn(ci_Charlieplex_LED1, ci_Charlieplex_LED2,
                        ci_Charlieplex_LED3, ci_Charlieplex_LED4, ci_Mode_Button);

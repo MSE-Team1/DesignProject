@@ -13,5 +13,6 @@
 #include "pins.h"
 #include "drivefun.h"
 #include "sensorfun.h"
+#include "IRSensor.h"
 
 #endif
