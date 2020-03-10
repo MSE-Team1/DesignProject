@@ -6,12 +6,13 @@
 //#define DEBUG_MOTORS
 //#define DEBUG_DRIVE
 //#define DEBUG_LINE_TRACKERS
-//#define DEBUG_ENCODERS
+#define DEBUG_ZERO_POINT_TURN
+#define DEBUG_ENCODERS
 //#define DEBUG_ENCODER_DRIVE
 //#define DEBUG_MOTOR_CALIBRATION
 //#define DEBUG_ULTRASONIC
 //#define DEBUG_LINE_TRACKER_CALIBRATION
-
+#define DEBUG_COURSE_STAGE
 
 //motor objects
 Servo servo_RightMotor;

@@ -7,10 +7,9 @@ const int ci_Right_Motor_Stop = 1500;
 const int ci_Motor_Speed_Brake = 200;
 const int ci_Motor_Speed_Forward_Encoder = 1700;
 const int ci_Motor_Speed_Reverse_Encoder = 1300;
-const int ci_Counts_Per_Rotation = 619; //how many encoder ticks in one rotation of the wheel
+const float cf_Counts_Per_Rotation = 627.2; //how many encoder ticks in one rotation of the wheel
 //TODO: measure robot and get actual values
-const float cf_Rotation_Factor = 50.0/100.0; //to convert degrees of rotation of robot to degrees of rotation of wheels -- distance between wheels/diameter of wheel 
-
+const float cf_Rotation_Factor = cf_Counts_Per_Rotation*(18.5/7.0)/(2.0*PI); //to convert degrees of rotation of robot to encoder counts
 //identifiers for left and right motor in functions
 const int RIGHT_MOTOR = 0;
 const int LEFT_MOTOR = 1;
@@ -115,17 +114,24 @@ bool EncoderDriveReverse(int i_Count, int i_Side) {
 
 //zero point turn left a certain amount of degrees
 //encoders must be zeroed in previous stage
-bool ZeroPoint(int i_Degrees, int i_Direction){
+bool ZeroPoint(int i_Degrees, int i_Direction) {
   boolean bt_State = 1;
-  int i_Count = cf_Rotation_Factor*i_Degrees*ci_Counts_Per_Rotation/360; //calculate the number of encoder counts needed to turn
+  int i_Count = (((float)i_Degrees*71.0)/4068.0) * cf_Rotation_Factor; //calculate the number of encoder counts needed to turn
+
+#ifdef DEBUG_ZERO_POINT_TURN
+  Serial.print("DEGREES: ");
+  Serial.print(i_Degrees);
+  Serial.print("  COUNTS: ");
+  Serial.println(i_Count);
+#endif
 
   //clockwise direction
-  if(i_Direction == CLOCKWISE){
+  if (i_Direction == CLOCKWISE) {
     bt_State &= EncoderDriveForward(i_Count, LEFT_MOTOR);
     bt_State &= EncoderDriveReverse(i_Count, RIGHT_MOTOR);
   }
   //counterclockwise direction
-  else{
+  else {
     bt_State &= EncoderDriveReverse(i_Count, LEFT_MOTOR);
     bt_State &= EncoderDriveForward(i_Count, RIGHT_MOTOR);
   }

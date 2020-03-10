@@ -235,19 +235,31 @@ void loop()
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR); //R
+                bt_Go_To_Next_Stage &= EncoderDriveForward(100, LEFT_MOTOR); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(100, RIGHT_MOTOR); //R
                
                 
                 //when both functions return true then they have reached the desired count
                 if(bt_Go_To_Next_Stage){
-                  //ui_Course_State_Index++
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+                  
+                  ui_Course_State_Index++;
                 }
                 break;
               }
               case 2:
               {
-                
+                bt_Go_To_Next_Stage = ZeroPoint(90,CLOCKWISE);
+
+                if(bt_Go_To_Next_Stage){
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+                  
+                  ui_Course_State_Index++;
+                }
                 break;
               }
 
@@ -256,10 +268,10 @@ void loop()
 
 
           if (ui_Left_Motor_Speed != ci_Motor_Speed_Brake) {
-            ui_Left_Motor_Speed = constrain(ui_Left_Motor_Speed + ui_Left_Motor_Offset, 900, 2100);
+            ui_Left_Motor_Speed = constrain(ui_Left_Motor_Speed, 900, 2100);
           }
           if (ui_Right_Motor_Speed != ci_Motor_Speed_Brake) {
-            ui_Right_Motor_Speed = constrain(ui_Right_Motor_Speed + ui_Right_Motor_Offset, 900, 2100);
+            ui_Right_Motor_Speed = constrain(ui_Right_Motor_Speed, 900, 2100);
           }
 
 #ifdef DEBUG_DRIVE
