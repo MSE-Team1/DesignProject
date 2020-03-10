@@ -12,7 +12,11 @@
 //#define DEBUG_MOTOR_CALIBRATION
 //#define DEBUG_ULTRASONIC
 //#define DEBUG_LINE_TRACKER_CALIBRATION
+<<<<<<< HEAD
 #define DEBUG_COURSE_STAGE
+=======
+#define DEBUG_IRSensor
+>>>>>>> origin/Stuart
 
 //motor objects
 Servo servo_RightMotor;
