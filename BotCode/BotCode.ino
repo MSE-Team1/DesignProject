@@ -2,7 +2,7 @@
 
   MSE 2202 BotCode for the design project
   Language: Arduino
-  Authors: Michael Naish, Eugen Porter, Stewart Wing, and Kyle Inzunza
+  Authors: Michael Naish, Eugen Porter, Stuart Wing, and Kyle Inzunza
   Date: 03-03-20
 
   Rev 1 - Initial version
@@ -213,41 +213,43 @@ void loop()
           Serial.println(ui_Course_State_Index);
 #endif
 
+
+          CheckBeacon();
           switch (ui_Course_State_Index) {
             case 0:
               {
                 //zero encoders
                 encoder_RightMotor.zero();
                 encoder_LeftMotor.zero();
-                
+
                 //make sure motors are stopped
                 ui_Left_Motor_Speed = ci_Left_Motor_Stop;
                 ui_Right_Motor_Speed = ci_Right_Motor_Stop;
-                
+
                 ui_Course_State_Index++;
 
                 break;
               }
-              case 1:
+            case 1:
               {
                 bt_Go_To_Next_Stage = 1; //default to true, encoder statem
-                
+
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
                 bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR); //L
                 bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR); //R
-               
-                
+
+
                 //when both functions return true then they have reached the desired count
-                if(bt_Go_To_Next_Stage){
+                if (bt_Go_To_Next_Stage) {
                   //ui_Course_State_Index++
                 }
                 break;
               }
-              case 2:
+            case 2:
               {
-                
+
                 break;
               }
 
