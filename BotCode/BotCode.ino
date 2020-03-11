@@ -239,7 +239,6 @@ void loop()
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
-<<<<<<< HEAD
                 bt_Go_To_Next_Stage &= EncoderDriveForward(100, LEFT_MOTOR); //L
                 bt_Go_To_Next_Stage &= EncoderDriveForward(100, RIGHT_MOTOR); //R
                
@@ -251,22 +250,20 @@ void loop()
                   encoder_RightMotor.zero();
                   
                   ui_Course_State_Index++;
-=======
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR); //R
+
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR, SPEED_DEFAULT); //R
 
 
                 //when both functions return true then they have reached the desired count
                 if (bt_Go_To_Next_Stage) {
                   //ui_Course_State_Index++
->>>>>>> origin/Stuart
                 }
                 break;
               }
             case 2:
               {
-<<<<<<< HEAD
-                bt_Go_To_Next_Stage = ZeroPoint(90,CLOCKWISE);
+                bt_Go_To_Next_Stage = ZeroPoint(90,CLOCKWISE, SPEED_1); //turn 90 degrees
 
                 if(bt_Go_To_Next_Stage){
                   //zero encoders
@@ -275,9 +272,7 @@ void loop()
                   
                   ui_Course_State_Index++;
                 }
-=======
-
->>>>>>> origin/Stuart
+                
                 break;
               }
 

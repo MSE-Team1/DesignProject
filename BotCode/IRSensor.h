@@ -6,14 +6,14 @@
 const int ci_NO_BEACON = 0;
 const int ci_A_BEACON = 1;
 const int ci_B_BEACON = 2;
+
+unsigned int ui_Beacon_Seen;
+
 SoftwareSerial mySerial(10, 11); // RX, TX
 
 
-
-
-
-
-void CheckBeacon() {
+//returns type of beacon seen
+int CheckBeacon() {
   boolean bt_Flag = 0;
   int i_Beacon;
   int ir_int;
