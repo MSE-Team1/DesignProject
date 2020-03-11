@@ -9,7 +9,7 @@ const int ci_B_BEACON = 2;
 
 unsigned int ui_Beacon_Seen;
 
-SoftwareSerial mySerial(10, 11); // RX, TX
+SoftwareSerial mySerial(ci_Light_Sensor, 11); // RX, TX
 
 
 //returns type of beacon seen

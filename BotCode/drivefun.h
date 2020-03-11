@@ -33,8 +33,11 @@ const int SPEED_4 = 4;
 unsigned int ui_Left_Motor_Speed;
 unsigned int ui_Right_Motor_Speed;
 unsigned int ui_Motors_Speed = 1900;        // Default run speed
+unsigned int ui_Left_Saved_Encoder_Position;
+unsigned int ui_Right_Saved_Encoder_Position; 
 long l_Left_Motor_Position;
 long l_Right_Motor_Position;
+
 
 //if encoder count is less than the required count, forward speed is sent to motor
 //encoders must be zeroed in previous stage
