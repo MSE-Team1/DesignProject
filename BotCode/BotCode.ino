@@ -45,7 +45,7 @@ unsigned int ui_Cal_Cycle;
 
 
 unsigned int ui_Robot_State_Index = 0;
-unsigned int ui_Course_State_Index = 0; //what part of the showcase program should be running
+unsigned int ui_Course_State_Index = 6; //what part of the showcase program should be running
 
 //flags
 boolean bt_Go_To_Next_Stage;
@@ -237,8 +237,8 @@ void loop()
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
-                bt_Go_To_Next_Stage &= EncoderDriveForward(600, LEFT_MOTOR, SPEED_DEFAULT); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(600, RIGHT_MOTOR, SPEED_DEFAULT); //R
+                bt_Go_To_Next_Stage &= EncoderDriveForward(5000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(5000, RIGHT_MOTOR, SPEED_DEFAULT); //R
 
 
                 //when both functions return true then they have reached the desired count
@@ -253,7 +253,7 @@ void loop()
               }
             case 2:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(45, CLOCKWISE, SPEED_1); //turn 90 degrees
+                bt_Go_To_Next_Stage = ZeroPoint(42, CLOCKWISE, SPEED_3); //turn 90 degrees
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -272,8 +272,8 @@ void loop()
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
-                bt_Go_To_Next_Stage &= EncoderDriveForward(100, LEFT_MOTOR, SPEED_DEFAULT); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(100, RIGHT_MOTOR, SPEED_DEFAULT); //R
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1500, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1500, RIGHT_MOTOR, SPEED_DEFAULT); //R
 
 
                 //when both functions return true then they have reached the desired count
@@ -281,65 +281,86 @@ void loop()
                   //zero encoders
                   encoder_LeftMotor.zero();
                   encoder_RightMotor.zero();
+
+                  ui_Course_State_Index++;
                 }
                 break;
               }
             case 4:
               {
-                UpdateUltrasonicDistance();
+                /*
+                  UpdateUltrasonicDistance();
 
-                //if the robot has not reached the wall
-                if (ui_Ultrasonic_Distance < 5) {
+                  //if the robot has not reached the wall
+                  if (ui_Ultrasonic_Distance > 5 && ui_Ultrasonic_Distance != 0) {
                   ui_Left_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
                   ui_Right_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
-                }
-                else
-                {
+                  }
+                  else
+                  {
                   //zero encoders
                   encoder_LeftMotor.zero();
                   encoder_RightMotor.zero();
 
                   ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
                   ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
-                }
-                break;
-              }
-            case 5:
-              {
-                bt_Go_To_Next_Stage = ZeroPoint(90, CLOCKWISE, SPEED_1); //turn 90 degrees
+
+                  ui_Course_State_Index++;
+                  }
+                */
+
+                bt_Go_To_Next_Stage = ZeroPoint(20, CLOCKWISE, SPEED_3);
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
                   encoder_LeftMotor.zero();
                   encoder_RightMotor.zero();
 
-                  if (ui_Beacon_Seen != ci_NO_BEACON) {
-                    bt_Beacon_On_Right = 1;
-                    ui_Course_State_Index += 2; //skip next step
-                  }
-                  else {
-                    bt_Beacon_On_Right = 0;
-                    ui_Course_State_Index++;
-                  }
+                  ui_Course_State_Index++;
                 }
+
+
+                break;
+              }
+            case 5:
+              {
+                //bt_Go_To_Next_Stage = ZeroPoint(90, CLOCKWISE, SPEED_1); //turn 90 degrees
+
+                bt_Go_To_Next_Stage = 1;
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR, SPEED_DEFAULT); //R
+
+                if (bt_Go_To_Next_Stage) {
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+                  ui_Course_State_Index++;
+                }
+
                 break;
               }
             case 6:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(180, COUNTERCLOCKWISE, SPEED_1); //turn  robot around
+                bt_Go_To_Next_Stage = ZeroPoint(720, COUNTERCLOCKWISE, SPEED_1); //turn  robot around
 
-                if (bt_Go_To_Next_Stage)
+                if (bt_A_BEACON)
                 {
                   //zero encoders
                   encoder_LeftMotor.zero();
                   encoder_RightMotor.zero();
 
-                  ui_Course_State_Index++;
+                  ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
+                  ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
+                  //break motors right away
+                  servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+                  servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+
+                  //ui_Course_State_Index++;
                 }
               }
             case 7:
               {
-                if (ui_Beacon_Seen != ci_NO_BEACON)
+                if (bt_A_BEACON)
                 {
                   ui_Left_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
                   ui_Right_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
@@ -349,9 +370,11 @@ void loop()
                   ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
                   ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
 
-                  //save encoder positions
+
+                  //save encoder values
                   ui_Left_Saved_Encoder_Position = encoder_LeftMotor.getRawPosition();
                   ui_Right_Saved_Encoder_Position = encoder_RightMotor.getRawPosition();
+
 
                   //zero encoders
                   encoder_LeftMotor.zero();
@@ -385,12 +408,16 @@ void loop()
               }
             case 9:
               {
-                if (bt_Beacon_On_Right) {
+                /*
+                  if (bt_Beacon_On_Right) {
                   bt_Go_To_Next_Stage = ZeroPoint(90, CLOCKWISE, SPEED_1);
-                }
-                else {
+                  }
+                  else {
                   bt_Go_To_Next_Stage = ZeroPoint(90, COUNTERCLOCKWISE, SPEED_1);
-                }
+                  }
+                */
+
+                bt_Go_To_Next_Stage = ZeroPoint(130, CLOCKWISE, SPEED_2);
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -400,6 +427,10 @@ void loop()
                   ui_Course_State_Index++;
                 }
 
+                break;
+              }
+            case 10:
+              {
                 break;
               }
           }
@@ -440,8 +471,9 @@ void loop()
           Serial.println(ui_Right_Motor_Speed);
 #endif
           ui_Mode_Indicator_Index = 1;
+
+          break;
         }
-        break;
       }
 
     case 2:    //FREE SPACE

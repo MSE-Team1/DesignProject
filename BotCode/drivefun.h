@@ -9,7 +9,7 @@ const int ci_Motor_Speed_Forward_Encoder = 1700;
 const int ci_Motor_Speed_Reverse_Encoder = 1300;
 
 //arrays of speeds
-int i_Motor_Speed_Forward[] = {1700, 1550, 1600, 1650}; //default, 1, 2, 3...etc
+int i_Motor_Speed_Forward[] = {1700, 1575, 1600, 1650}; //default, 1, 2, 3...etc
 int i_Motor_Speed_Reverse[] = {1300, 1450, 1400, 1350}; //default, 1, 2, 3...etc
 
 const float cf_Counts_Per_Rotation = 627.2; //how many encoder ticks in one rotation of the wheel
