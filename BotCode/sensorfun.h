@@ -2,7 +2,20 @@
 #define SENSORFUN_H
 
 unsigned long ul_Echo_Time;
+unsigned long ul_Ping_Timer = 0; 
 
+unsigned int ui_Ultrasonic_Distance = 0; //cm
+
+//returns distance seen by ultrasonic in cm
+int GetUltrasonicDistance(){
+  //if time has passed
+  if(millis() - ul_Ping_Timer >= 60){
+    Ping();
+    ui_Ultrasonic_Distance = ul_Echo_Time / 58;
+
+    ul_Ping_Timer = millis(); //reset timer
+  }
+}
 
 // measure distance to target using ultrasonic sensor
 void Ping()

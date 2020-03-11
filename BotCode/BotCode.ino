@@ -111,7 +111,8 @@ void setup() {
   encoder_RightMotor.setReversed(true);  // adjust for positive count when moving forward
 
 
-
+  b_LowByte = EEPROM.read(ci_Left_Motor_Offset_Address_L);
+  b_HighByte = EEPROM.read(ci_Left_Motor_Offset_Address_H);
   ui_Left_Motor_Offset = word(b_HighByte, b_LowByte);
   b_LowByte = EEPROM.read(ci_Right_Motor_Offset_Address_L);
   b_HighByte = EEPROM.read(ci_Right_Motor_Offset_Address_H);
@@ -149,6 +150,8 @@ void loop()
   bt_Motors_Enabled = digitalRead(ci_Motor_Enable_Switch);
   // check what corner robot is in
   bt_North_Corner = digitalRead(ci_Corner_Select_Switch);
+
+  CheckBeacon();
 
 
   // modes
@@ -212,9 +215,6 @@ void loop()
           Serial.print("COURSE STAGE BEING RUN: ");
           Serial.println(ui_Course_State_Index);
 #endif
-
-
-          CheckBeacon();
           
         
           switch (ui_Course_State_Index) {
@@ -263,7 +263,7 @@ void loop()
               }
             case 2:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(90,CLOCKWISE, SPEED_1); //turn 90 degrees
+                bt_Go_To_Next_Stage = ZeroPoint(45,CLOCKWISE, SPEED_1); //turn 90 degrees
 
                 if(bt_Go_To_Next_Stage){
                   //zero encoders
