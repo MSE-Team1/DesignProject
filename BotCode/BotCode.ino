@@ -75,6 +75,7 @@ boolean bt_Do_Once = false;
 boolean bt_Cal_Initialized = false;
 
 boolean bt_North_Corner; //if true: robot starts in north corner, if false: robot starts in south corner
+boolean bt_Flag_Sweep = 0; //stores sweep stage 0~sweep 1~stop
 
 void setup() {
   Wire.begin();        // Wire library required for I2CEncoder library
@@ -149,7 +150,7 @@ void loop()
   // check what corner robot is in
   bt_North_Corner = digitalRead(ci_Corner_Select_Switch);
 
-  ui_Beacon_Seen = CheckBeacon(); //update every time to free up software serial buffer
+  CheckBeacon(); //update every time to free up software serial buffer
 
 
   // modes
@@ -327,8 +328,8 @@ void loop()
                 //bt_Go_To_Next_Stage = ZeroPoint(90, CLOCKWISE, SPEED_1); //turn 90 degrees
 
                 bt_Go_To_Next_Stage = 1;
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, LEFT_MOTOR, SPEED_DEFAULT); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(1000, RIGHT_MOTOR, SPEED_DEFAULT); //R
+                bt_Go_To_Next_Stage &= EncoderDriveForward(500, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(500, RIGHT_MOTOR, SPEED_DEFAULT); //R
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -339,9 +340,29 @@ void loop()
 
                 break;
               }
+            //search for beacon
             case 6:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(720, COUNTERCLOCKWISE, SPEED_1); //turn  robot around
+
+#ifdef MODE_ENCODERS_ONLY
+                //ENCODER ONLY DRIVE MODE
+                bt_Go_To_Next_Stage = 1;
+                bt_Go_To_Next_Stage &= EncoderDriveForward(500, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(500, RIGHT_MOTOR, SPEED_DEFAULT); //R
+
+                if (bt_Go_To_Next_Stage) {
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+                  ui_Course_State_Index++;
+                }
+
+#endif
+
+
+#ifdef MODE_SMOOTH_SWEEP
+                //SMOOTH SWEEP SEARCH MODE
+                ZeroPoint(720, COUNTERCLOCKWISE, SPEED_1); //turn  robot around
 
                 if (bt_A_BEACON)
                 {
@@ -351,15 +372,55 @@ void loop()
 
                   ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
                   ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
-                  //break motors right away
+                  //brake motors right away
                   servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
                   servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
 
-                  //ui_Course_State_Index++;
+                  ui_Course_State_Index++;
                 }
+#endif
+
+#ifdef MODE_STEP_SWEEP
+                //STEP SWEEP SEARCH MODE
+                if (bt_Flag_Sweep) {
+                  //once zero point turn is completed
+                  if (ZeroPoint(3, CLOCKWISE, SPEED_DEFAULT)) {
+
+                    ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
+                    ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
+                    //brake motors right away
+                    servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+                    servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+
+                    bt_Flag_Sweep = 0; //switch to stop mode
+                  }
+                }
+                else {
+                  bt_Flag_Sweep = 1; //switch to sweep mode
+                  if (bt_A_BEACON) {
+
+                    //zero encoders
+                    encoder_LeftMotor.zero();
+                    encoder_RightMotor.zero();
+
+                    ui_Course_State_Index++;
+
+                  }
+                }
+#endif
+                break;
               }
             case 7:
               {
+
+#ifdef MODE_ENCODERS_ONLY
+                //ENCODERS ONLY DRIVE MODE
+                ui_Course_State_Index++; //skip this step
+#endif
+
+
+#if defined(MODE_STEP_SWEEP) || defined(MODE_SMOOTH_SWEEP)
+                //SWEEP MODES
                 if (bt_A_BEACON)
                 {
                   ui_Left_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
@@ -382,18 +443,30 @@ void loop()
 
                   ui_Course_State_Index++;
                 }
+#endif
 
                 break;
               }
             case 8:
               {
-                bt_Go_To_Next_Stage = 1; //default to true, encoder statem
+
+
+                bt_Go_To_Next_Stage = 1; //default to true, encoder statement
+
 
                 //run encoders reverse to get back to middle
-                //equiv of right&&left
+
+
+#if defined(MODE_STEP_SWEEP) || defined(MODE_SMOOTH_SWEEP)
                 //do not run in if statement becasue only the first function will run
                 bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Left_Saved_Encoder_Position, LEFT_MOTOR, SPEED_DEFAULT); //L
                 bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Right_Saved_Encoder_Position, RIGHT_MOTOR, SPEED_DEFAULT); //R
+#endif
+
+#ifdef MODE_ENCODERS_ONLY
+                bt_Go_To_Next_Stage &= EncoderDriveReverse(1000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveReverse(1000, RIGHT_MOTOR, SPEED_DEFAULT); //R
+#endif
 
 
                 //when both functions return true then they have reached the desired count
@@ -408,15 +481,6 @@ void loop()
               }
             case 9:
               {
-                /*
-                  if (bt_Beacon_On_Right) {
-                  bt_Go_To_Next_Stage = ZeroPoint(90, CLOCKWISE, SPEED_1);
-                  }
-                  else {
-                  bt_Go_To_Next_Stage = ZeroPoint(90, COUNTERCLOCKWISE, SPEED_1);
-                  }
-                */
-
                 bt_Go_To_Next_Stage = ZeroPoint(130, CLOCKWISE, SPEED_2);
 
                 if (bt_Go_To_Next_Stage) {
@@ -430,6 +494,14 @@ void loop()
                 break;
               }
             case 10:
+              {
+                break;
+              }
+            case 11:
+              {
+                break;
+              }
+            case 12:
               {
                 break;
               }

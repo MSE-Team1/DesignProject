@@ -8,15 +8,13 @@ bool bt_B_BEACON = 0; //5
 
 unsigned long ul_No_Beacon_Timer = 0;
 
-unsigned int ui_Beacon_Seen;
 
 SoftwareSerial mySerial(ci_Light_Sensor, 11); // RX, TX
 
 //TODO: add timer functionality
 //returns type of beacon seen
-int CheckBeacon() {
+void CheckBeacon() {
   boolean bt_Flag = 0;
-  int i_Beacon;
   int ir_int;
 
   while (mySerial.available() > 0) {
@@ -54,7 +52,6 @@ int CheckBeacon() {
   Serial.print(",  SEES B: ");
   Serial.println(bt_B_BEACON);
 #endif
-  return i_Beacon;
 }
 
 #endif
