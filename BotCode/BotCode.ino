@@ -1,3 +1,4 @@
+
 /*
 
   MSE 2202 BotCode for the design project
@@ -45,7 +46,7 @@ unsigned int ui_Cal_Cycle;
 
 
 unsigned int ui_Robot_State_Index = 0;
-unsigned int ui_Course_State_Index = 6; //what part of the showcase program should be running
+unsigned int ui_Course_State_Index = 0; //what part of the showcase program should be running
 
 //flags
 boolean bt_Go_To_Next_Stage;
@@ -238,8 +239,8 @@ void loop()
                 //run encoders forward certain distance
                 //equiv of right&&left
                 //do not run in if statement becasue only the first function will run
-                bt_Go_To_Next_Stage &= EncoderDriveForward(5000, LEFT_MOTOR, SPEED_DEFAULT); //L
-                bt_Go_To_Next_Stage &= EncoderDriveForward(5000, RIGHT_MOTOR, SPEED_DEFAULT); //R
+                bt_Go_To_Next_Stage &= EncoderDriveForward(4000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(4000, RIGHT_MOTOR, SPEED_DEFAULT); //R
 
 
                 //when both functions return true then they have reached the desired count
@@ -254,7 +255,7 @@ void loop()
               }
             case 2:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(42, CLOCKWISE, SPEED_3); //turn 90 degrees
+                bt_Go_To_Next_Stage = ZeroPoint(42, CLOCKWISE, SPEED_2); //turn 90 degrees
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -310,7 +311,7 @@ void loop()
                   }
                 */
 
-                bt_Go_To_Next_Stage = ZeroPoint(20, CLOCKWISE, SPEED_3);
+                bt_Go_To_Next_Stage = ZeroPoint(20, CLOCKWISE, 5);
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -418,13 +419,16 @@ void loop()
                 ui_Course_State_Index++; //skip this step
 #endif
 
-
-#if defined(MODE_STEP_SWEEP) || defined(MODE_SMOOTH_SWEEP)
+                //got rid of step mode for now
+#ifdef MODE_SMOOTH_SWEEP
                 //SWEEP MODES
-                if (bt_A_BEACON)
+
+                UpdateUltrasonicDistance();
+
+                if (ui_Ultrasonic_Distance > 2)
                 {
-                  ui_Left_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
-                  ui_Right_Motor_Speed = i_Motor_Speed_Forward[SPEED_2];
+                  ui_Left_Motor_Speed = i_Motor_Speed_Forward[SPEED_8];
+                  ui_Right_Motor_Speed = i_Motor_Speed_Forward[SPEED_8];
                 }
                 else
                 {
@@ -443,6 +447,7 @@ void loop()
 
                   ui_Course_State_Index++;
                 }
+
 #endif
 
                 break;
@@ -457,10 +462,10 @@ void loop()
                 //run encoders reverse to get back to middle
 
 
-#if defined(MODE_STEP_SWEEP) || defined(MODE_SMOOTH_SWEEP)
+#ifdef MODE_SMOOTH_SWEEP
                 //do not run in if statement becasue only the first function will run
-                bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Left_Saved_Encoder_Position, LEFT_MOTOR, SPEED_DEFAULT); //L
-                bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Right_Saved_Encoder_Position, RIGHT_MOTOR, SPEED_DEFAULT); //R
+                bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Left_Saved_Encoder_Position +500, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveReverse(ui_Right_Saved_Encoder_Position+500, RIGHT_MOTOR, SPEED_DEFAULT); //R
 #endif
 
 #ifdef MODE_ENCODERS_ONLY
@@ -481,7 +486,7 @@ void loop()
               }
             case 9:
               {
-                bt_Go_To_Next_Stage = ZeroPoint(130, CLOCKWISE, SPEED_2);
+                bt_Go_To_Next_Stage = ZeroPoint(150, CLOCKWISE, SPEED_4);
 
                 if (bt_Go_To_Next_Stage) {
                   //zero encoders
@@ -495,10 +500,37 @@ void loop()
               }
             case 10:
               {
+                //SMOOTH SWEEP SEARCH MODE
+                ZeroPoint(1000, COUNTERCLOCKWISE, SPEED_1); 
+
+                if (bt_B_BEACON)
+                {
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+
+                  ui_Left_Motor_Speed = ci_Motor_Speed_Brake;
+                  ui_Right_Motor_Speed = ci_Motor_Speed_Brake;
+                  //brake motors right away
+                  servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+                  servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+
+                  ui_Course_State_Index++;
+                }
                 break;
               }
             case 11:
               {
+                bt_Go_To_Next_Stage = 1;
+                bt_Go_To_Next_Stage &= EncoderDriveForward(4000, LEFT_MOTOR, SPEED_DEFAULT); //L
+                bt_Go_To_Next_Stage &= EncoderDriveForward(4000, RIGHT_MOTOR, SPEED_DEFAULT); //R
+
+                if (bt_Go_To_Next_Stage) {
+                  //zero encoders
+                  encoder_LeftMotor.zero();
+                  encoder_RightMotor.zero();
+                  ui_Course_State_Index++;
+                }
                 break;
               }
             case 12:

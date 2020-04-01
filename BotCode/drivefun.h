@@ -9,8 +9,8 @@ const int ci_Motor_Speed_Forward_Encoder = 1700;
 const int ci_Motor_Speed_Reverse_Encoder = 1300;
 
 //arrays of speeds
-int i_Motor_Speed_Forward[] = {1700, 1575, 1600, 1650}; //default, 1, 2, 3...etc
-int i_Motor_Speed_Reverse[] = {1300, 1450, 1400, 1350}; //default, 1, 2, 3...etc
+int i_Motor_Speed_Forward[] = {1700, 1575, 1600, 1650, 1700, 1750, 1800, 1850, 1900}; //default, 1, 2, 3...etc
+int i_Motor_Speed_Reverse[] = {1300, 1425, 1400, 1350, 1300, 1250, 1200, 1150, 1110}; //default, 1, 2, 3...etc
 
 const float cf_Counts_Per_Rotation = 627.2; //how many encoder ticks in one rotation of the wheel
 //TODO: measure robot and get actual values
@@ -28,6 +28,10 @@ const int SPEED_1 = 1;
 const int SPEED_2 = 2;
 const int SPEED_3 = 3;
 const int SPEED_4 = 4;
+const int SPEED_5 = 5;
+const int SPEED_6 = 6; 
+const int SPEED_7 = 7; 
+const int SPEED_8 = 8;
 
 //variables
 unsigned int ui_Left_Motor_Speed;
